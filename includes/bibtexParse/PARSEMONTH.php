@@ -29,14 +29,13 @@ http://bibliophile.sourceforge.net
 
 // 17/June/2005 - Mark Grimshaw:  month fields that have multiple dates (e.g. dec # " 5--9," or nov # " 29" # "--" # dec # " 2") are correctly parsed.
 class PARSEMONTH {
-    
     // Constructor
-    public function __construct() {
+    function PARSEMONTH() {
     }
     
     function init($monthField) {
         $startMonth = $this->startDay = $endMonth = $this->endDay = FALSE;
-        $date = explode("#", $monthField);
+        $date = split("#", $monthField);
         foreach($date as $field) {
             $field = ucfirst(strtolower(trim($field)));
             if( $month = array_search($field, $this->monthToLongName()) ) {
@@ -66,10 +65,7 @@ class PARSEMONTH {
         return array($startMonth, $this->startDay, $endMonth, $this->endDay);
     }
         
-    /**
-     * extract day of month from field
-     * @param string $dayField
-     */
+    // extract day of month from field
     function parseDay($dayField) {
         preg_match("/([0-9]+).*([0-9]+)|([0-9]+)/", $dayField, $array);
         if(array_key_exists(3, $array))
@@ -91,10 +87,7 @@ class PARSEMONTH {
         }
     }
     
-    /**
-     * Convert month to long name
-     * @return array
-     */
+    // Convert month to long name
     function monthToLongName() {
         return array(
             1	=>	'January',
@@ -112,10 +105,7 @@ class PARSEMONTH {
         );
     }
     
-    /**
-     * Convert month to short name
-     * @return array
-     */
+    // Convert month to short name
     function monthToShortName() {
         return array(
             1	=>	'Jan',

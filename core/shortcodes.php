@@ -1160,7 +1160,7 @@ function tp_cloud_shortcode($atts) {
         'image_link' => htmlspecialchars($atts['image_link']),
         'link_style' => htmlspecialchars($atts['link_style']),
         'title_ref' => htmlspecialchars($atts['title_ref']),
-        'html_anchor' => ( $atts['anchor'] == '1' ) ? '#tppubs' . htmlspecialchars($atts['container_suffix']) : '',
+        'html_anchor' => ( $atts['anchor'] == '1' ) ? '#tppubs' : '',
         'date_format' => htmlspecialchars($atts['date_format']),
         'permalink' => ( get_option('permalink_structure') ) ? get_permalink() . "?" : get_permalink() . "&amp;",
         'convert_bibtex' => ( get_tp_option('convert_bibtex') == '1' ) ? true : false,
@@ -1284,10 +1284,7 @@ function tp_cloud_shortcode($atts) {
     }
     
     // complete the header (tag cloud + filter)
-    $part1 = '<a name="tppubs" id="tppubs"' . $settings['container_suffix'] . '></a>
-            <div class="teachpress_cloud">' . $asg . '</div>
-            <div class="teachpress_filter">' . $filter . '</div>
-            <p style="text-align:center">' . $showall . '</p>';
+    $part1 = '<a name="tppubs" id="tppubs"></a><div class="teachpress_cloud">' . $asg . '</div><div class="teachpress_filter">' . $filter . '</div><p style="text-align:center">' . $showall . '</p>';
 
     /************************/
     /* List of publications */
@@ -1414,7 +1411,6 @@ function tp_cloud_shortcode($atts) {
  *      image (STRING)              none, left, right or bottom, default: none 
  *      image_size (INT)            max. Image size, default: 0
  *      image_link (STRING)         none, self or post (defalt: none)
- *      anchor (INT)                0 (false) or 1 (true), default: 1
  *      author_name (STRING)        last, initials or old, default: last
  *      editor_name (STRING)        last, initials or old, default: last
  *      author_separator (STRING)   The separator for author names
@@ -1453,7 +1449,6 @@ function tp_list_shortcode($atts){
        'image' => 'none',
        'image_size' => 0,
        'image_link' => 'none',
-       'anchor' => 1,
        'author_name' => 'initials',
        'editor_name' => 'initials',
        'author_separator' => ';',
@@ -1480,7 +1475,7 @@ function tp_list_shortcode($atts){
     $pagination = intval($atts['pagination']);
     $entries_per_page = intval($atts['entries_per_page']);
     $sort_list = htmlspecialchars($atts['sort_list']);
-    $form_limit = ( isset($_GET['limit' . $atts['container_suffix']]) ) ? intval($_GET['limit' . $atts['container_suffix']]) : '';
+    $form_limit = ( isset($_GET['limit']) ) ? intval($_GET['limit']) : '';
 
     $settings = array(
         'author_name' => htmlspecialchars($atts['author_name']),
@@ -1493,7 +1488,6 @@ function tp_list_shortcode($atts){
         'image_link' => htmlspecialchars($atts['image_link']),
         'with_tags' => 0,
         'title_ref' => htmlspecialchars($atts['title_ref']),
-        'html_anchor' => ( $atts['anchor'] == '1' ) ? '#tppubs' . htmlspecialchars($atts['container_suffix']) : '',
         'link_style' => htmlspecialchars($atts['link_style']),
         'date_format' => htmlspecialchars($atts['date_format']),
         'convert_bibtex' => ( get_tp_option('convert_bibtex') == '1' ) ? true : false,
@@ -1564,16 +1558,14 @@ function tp_list_shortcode($atts){
         $tpz++;
     }
     
-    // HTML anchor
-    $r = '<a name="tppubs" id="tppubs' . $settings['container_suffix'] . '"></a>';
     // menu
+    $r = '';
     $menu = ( $pagination === 1 ) ? tp_page_menu(array('number_entries' => $number_entries,
                                                        'entries_per_page' => $entries_per_page,
                                                        'current_page' => $pagination_limits['current_page'],
                                                        'entry_limit' => $pagination_limits['entry_limit'],
                                                        'page_link' => $page_link,
-                                                       'link_attributes' => $settings['html_anchor'],
-                                                       'container_suffix' => $settings['container_suffix'],
+                                                       'link_attributes' => '',
                                                        'mode' => 'bottom',
                                                        'before' => '<div class="tablenav">',
                                                        'after' => '</div>')) : '';

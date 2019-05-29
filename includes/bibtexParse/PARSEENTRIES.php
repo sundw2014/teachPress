@@ -3,25 +3,17 @@
  * This file contains the external class PARSEENTRIES of bibtexParse / WIKINDX4
  * @package teachpress\includes\bibtexParse
  */
-
 /*
-
 Inspired by an awk BibTeX parser written by Nelson H. F. Beebe over 20 years ago although 
 little of that remains.
-
 Released through http://bibliophile.sourceforge.net under the GPL licence.
 Do whatever you like with this -- some credit to the author(s) would be appreciated.
-
 A collection of PHP classes to manipulate bibtex files.
-
 If you make improvements, please consider contacting the administrators at bibliophile.sourceforge.net 
 so that your improvements can be added to the release package.
-
 Mark Grimshaw 2006
 http://bibliophile.sourceforge.net
-
 (Amendments to file reading Daniel Pozzi for v1.1)
-
 11/June/2005 - v1.53 Mark Grimshaw:  Stopped expansion of @string when entry is enclosed in {...} or "..."
 21/08/2004 v1.4 Guillaume Gardey, Added PHP string parsing and expand macro features.
  Fix bug with comments, strings macro.
@@ -29,14 +21,12 @@ http://bibliophile.sourceforge.net
     loadStringMacro($bibtex_string) to load a string. (array of lines)
 22/08/2004 v1.4 Mark Grimshaw - a few adjustments to Guillaume's code.
 28/04/2005 v1.5 Mark Grimshaw - a little debugging for @preamble
-
 02/05/2005 G. Gardey - Add support for @string macro defined by curly brackets:
            @string{M12 = {December}}
                      - Don't expand macro for bibtexCitation and bibtexEntryType
                      - Better support for fields like journal = {Journal of } # JRNL23
 03/05/2005 G. Gardey - Fix wrong field value parsing when an entry ends by
                            someField = {value}}
-
 	v2 ****************************************** v2
 						   
 30/01/2006 v2.0 Esteban Zimanyi 
@@ -45,7 +35,6 @@ http://bibliophile.sourceforge.net
       entries delimited by '@' and the closing delimiter. In particular, comments in Bibtex do not 
       necessarily have a % at the begining of the line !
 This required a complete rewrite of many functions as well as writing new ones !
-
 31/01/2006 Mark Grimshaw
    - Ensured that @comment{...} is ignored in parseEntry().
    - Modified extractEntries() to ensure that entries where the start brace/parenthesis is on a 
@@ -56,28 +45,20 @@ This required a complete rewrite of many functions as well as writing new ones !
 i.e. they are a non-numeric value that is not defined in a @string{...} entry and not enclosed by braces or double-quotes.
 This array will be empty unless the following condition is met:
 ($this->removeDelimit || $this->expandMacro && $this->fieldExtract)
-
 24/04/2006 Esteban Zimanyi
   - When an undefined string is found in function removeDelimiters return the empty string
   - Return $this->undefinedStrings in the last position to allow compatibility with previous versions
   - Fix management of preamble in function returnArrays
-
 28/12/2015 Michael Winkler
   - Outdated PHP methods replaced
-  - Fix for saving line breaks in abstracts and other fields
-
-07/04/2019 Michael Winkler
-  - Fix array offset errors in get_line()
-
+  - Fix for saving line breaks in abstracts and other fields  
 */
-
 /**
  * Main parsing class of BibTeXParse
  * 
  * @version 2.1.1
  */
 class PARSEENTRIES {
-
     public function __construct(){
         $this->preamble = $this->strings = $this->undefinedStrings = $this->entries = array();
         $this->count = 0;
@@ -114,7 +95,6 @@ class PARSEENTRIES {
         // Ignore the first line
         for ( $i = 1; $i < $max; $i++ ) {
             $line_before = mb_substr(trim( $line_array[$i-1] ), -2, 2);
-
             if ( strpos($line_array[$i], '@') === false &&  // No '@' in the line
                  strpos($line_array[$i], '=') === false &&  // No '=' in the line
                  $line_before !== '},' &&                   // No '},' at the end of the line before
@@ -188,12 +168,12 @@ class PARSEENTRIES {
             return FALSE;
         }
         else {
-            while($this->currentLine < count($this->bibtexString) && !isset($line)) {
+            do {
                 $line = trim($this->bibtexString[$this->currentLine]);
                 $this->currentLine++;
-                // echo $this->currentLine . ' ' . $line . '<br/>';
-                return $line;
             }
+            while($this->currentLine < count($this->bibtexString) && !$line);
+            return $line;
         }
     }
     
@@ -298,7 +278,6 @@ class PARSEENTRIES {
         $this->entries[$this->count]['bibtexCitation'] = $matches[2];
         $this->reduceFields($matches[3]);
     }
-
     /**
      * Grab a complete bibtex entry
      * 
@@ -332,7 +311,6 @@ class PARSEENTRIES {
             return $lastLine;
         }
     }
-
     /**
      * Remove delimiters from a string
      * 
@@ -357,7 +335,6 @@ class PARSEENTRIES {
         }
         return $string;
     }
-
     /**
      * This function works like explode('#',$val) but has to take into account whether
      * the character # is part of a string (i.e., is enclosed into "..." or {...} ) 
@@ -387,7 +364,6 @@ class PARSEENTRIES {
         $strings[] = substr($val,$j);
         return $strings;
     }
-
     /**
      * This function receives a string and a closing delimiter '}' or ')' 
      * and looks for the position of the closing delimiter taking into
@@ -421,7 +397,6 @@ class PARSEENTRIES {
         }
         return 0;
     }
-
     /**
      * Remove enclosures around entry field values.  Additionally, expand macros if flag set.
      * 
@@ -452,7 +427,6 @@ class PARSEENTRIES {
         }
         return $string;
     }
-
     /**
      * This function extract entries taking into account how comments are defined in BibTeX.
      * BibTeX splits the file in two areas: inside an entry and outside an entry, the delimitation 
@@ -499,7 +473,6 @@ class PARSEENTRIES {
             }
         }
     }
-
     /**
      * Return arrays of entries etc. to the calling process.
      * 
